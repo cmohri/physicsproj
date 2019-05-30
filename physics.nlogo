@@ -1,5 +1,8 @@
+globals [Q omega instQ instI]
+
 to setup
   clear-all
+  reset-ticks
   ask patches [
     if pxcor = -10 and pycor >= -10 and pycor <= 10 [
       set pcolor green
@@ -20,6 +23,12 @@ to setup
       set pcolor green
     ]
   ]
+  set voltage 10
+  set capacitance 10
+  set inductance 10
+  set Q bigQ
+  set omega o
+
 end
 
 
@@ -27,17 +36,56 @@ to go
   if switch[
     ask patches [
       if pxcor = 0 and pycor = 10 [
-        set pcolor green]]]
+        set pcolor green]
+    ]
+  ]
+end
+
+;; user input: capacitance, EMF, inductance
+
+;;get bigQ value
+to-report bigQ
+  ;;show error if either is equal to 0
+  report (capacitance * voltage)
+end
+
+;; get omega value
+to-report o
+  report 1 / sqrt(inductance * capacitance)
+end
+
+to-report ticknum
+  tick ;; every time tick is called, tick += 1
+  report ticks
+end
+
+
+to-report charge [time]
+  let deg (180 / pi) * (omega * time)
+  report Q * cos(deg)
+end
+
+to-report current [time]
+  let deg (180 / pi) * (omega * time)
+  report -1 * Q * omega * sin (deg)
+end
+
+
+to continue
+  set instQ charge ticks
+  set instI current ticks
+  ;;show instI
+  tick
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-452
-10
-870
-429
+708
+20
+1003
+316
 -1
 -1
-10.0
+7.0
 1
 10
 1
@@ -51,22 +99,151 @@ GRAPHICS-WINDOW
 20
 -20
 20
-0
-0
+1
+1
 1
 ticks
 30.0
 
 SWITCH
-46
-92
-149
-125
+14
+225
+117
+258
 switch
 switch
 0
 1
 -1000
+
+INPUTBOX
+137
+62
+202
+122
+voltage
+10.0
+1
+0
+Number
+
+INPUTBOX
+213
+62
+296
+122
+capacitance
+10.0
+1
+0
+Number
+
+INPUTBOX
+311
+62
+393
+122
+inductance
+10.0
+1
+0
+Number
+
+BUTTON
+14
+70
+100
+103
+NIL
+continue
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+PLOT
+135
+130
+681
+464
+charge and current
+time
+charge
+0.0
+1000.0
+-10.0
+10.0
+true
+true
+"" ""
+PENS
+"Instantaneous Current" 1.0 0 -4699768 true "" "plot instI"
+"Instantaneous Charge on Capacitor" 1.0 0 -955883 true "" "plot instQ"
+
+BUTTON
+14
+29
+80
+62
+NIL
+setup\n
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+491
+221
+665
+266
+time
+ticks
+17
+1
+11
+
+MONITOR
+491
+273
+665
+318
+Instantaneous Current (A)
+instI
+3
+1
+11
+
+MONITOR
+492
+324
+665
+369
+Instantaneous Charge (C)
+instQ
+3
+1
+11
+
+TEXTBOX
+139
+12
+289
+54
+Please input voltage, capacitance, and inductance values below:\n
+11
+0.0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
