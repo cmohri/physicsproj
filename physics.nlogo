@@ -3,26 +3,10 @@ globals [Q omega instQ instI]
 to setup
   clear-all
   reset-ticks
+  ;;
+  import-drawing "battery.png"
   ask patches [
-    if pxcor = -10 and pycor >= -10 and pycor <= 10 [
-      set pcolor green
-    ]
-    if pxcor = 10 and pycor >= -10 and pycor <= 10 [
-      set pcolor green
-    ]
-    if pxcor = 0 and pycor >= -10 and pycor <= 5[
-      set pcolor green
-    ]
-    if pycor = -10 and pxcor >= -10 and pxcor <= 10[
-      set pcolor green
-    ]
-    if pycor = 10 and pxcor >= -10 and pxcor <= -5 [
-      set pcolor green
-    ]
-    if pycor = 10 and pxcor >= 5  and pxcor <= 10 [
-      set pcolor green
-    ]
-  ]
+    if pxcor = 0[ set pcolor red]]
   set voltage 10
   set capacitance 10
   set inductance 10
@@ -79,13 +63,13 @@ to continue
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-708
-20
-1003
-316
+705
+51
+1078
+425
 -1
 -1
-7.0
+8.90244
 1
 10
 1
@@ -183,7 +167,7 @@ true
 "" ""
 PENS
 "Instantaneous Current" 1.0 0 -4699768 true "" "plot instI"
-"Instantaneous Charge on Capacitor" 1.0 0 -955883 true "" "plot instQ"
+"Instantaneous Charge on Capacitor" 1.0 0 -14070903 true "" "plot instQ"
 
 BUTTON
 14
@@ -246,6 +230,27 @@ Please input voltage, capacitance, and inductance values below:\n
 1
 
 @#$#@#$#@
+ask patches [
+    if pxcor = -10 and pycor >= -10 and pycor <= 10 [
+      set pcolor green
+    ]
+    if pxcor = 10 and pycor >= -10 and pycor <= 10 [
+      set pcolor green
+    ]
+    if pxcor = 0 and pycor >= -10 and pycor <= 5[
+      set pcolor green
+    ]
+    if pycor = -10 and pxcor >= -10 and pxcor <= 10[
+      set pcolor green
+    ]
+    if pycor = 10 and pxcor >= -10 and pxcor <= -5 [
+      set pcolor green
+    ]
+    if pycor = 10 and pxcor >= 5  and pxcor <= 10 [
+      set pcolor green
+    ]
+  ]
+
 ## WHAT IS IT?
 
 (a general understanding of what the model is trying to show or explain)
