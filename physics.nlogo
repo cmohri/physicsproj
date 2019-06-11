@@ -3,26 +3,44 @@ globals [Q omega instQ instI]
 to setup
   clear-all
   reset-ticks
-  ;;
-  import-drawing "battery.png"
   ask patches [
-    if pxcor = 0[ set pcolor red]]
+    if pxcor = -10 and pycor >= -10 and pycor <= 10 [
+      set pcolor green
+    ]
+    if pxcor = 10 and pycor >= -10 and pycor <= 10 [
+      set pcolor green
+    ]
+    if pxcor = 0 and pycor >= -10 and pycor <= 5[
+      set pcolor green
+    ]
+    if pycor = -10 and pxcor >= -10 and pxcor <= 10[
+      set pcolor green
+    ]
+    if pycor = 10 and pxcor >= -10 and pxcor <= -5 [
+      set pcolor green
+    ]
+    if pycor = 10 and pxcor >= 5  and pxcor <= 10 [
+      set pcolor green
+    ]
+  ]
+  ask patches [if pycor = -1 and pxcor >= -2 and pxcor <= 2[set pcolor green]]
+  ask patches [if pycor = 1 and pxcor >= -2 and pxcor <= 2[set pcolor green
+  sprout bigQ]]
+  ask patches [if pxcor = 0 and pycor = 0[set pcolor black]]
+
+  ask patches [
+      if (pxcor = -1 and pycor = 6) or
+      (pxcor = -2 and pycor = 7) or
+      (pxcor = -3 and pycor = 8) or
+      (pxcor = -4 and pycor = 9)
+
+      [set pcolor green]]
   set voltage 10
   set capacitance 10
   set inductance 10
   set Q bigQ
   set omega o
-
-end
-
-
-to go
-  if switch[
-    ask patches [
-      if pxcor = 0 and pycor = 10 [
-        set pcolor green]
-    ]
-  ]
+  set switch True
 end
 
 ;; user input: capacitance, EMF, inductance
@@ -55,21 +73,57 @@ to-report current [time]
 end
 
 
-to continue
-  set instQ charge ticks
-  set instI current ticks
+to switch_circuit
+  if not switch [
+
+    ask patches [
+      if (pxcor = -1 and pycor = 6) or
+      (pxcor = -2 and pycor = 7) or
+      (pxcor = -3 and pycor = 8) or
+      (pxcor = -4 and pycor = 9)
+
+      [set pcolor black]
+
+      if (pycor = 10 and pxcor >= -10 and pxcor <= -5) or
+      ( pycor = -10 and pxcor >= -10 and pxcor < 0)  or
+      (pxcor = -10 and pycor >= -10 and pycor < 10)
+      [set pcolor gray]]
+
+    ask patches [
+      if (pxcor = 1 and pycor = 6) or
+      (pxcor = 2 and pycor = 7)  or
+      (pxcor = 3 and pycor = 8) or
+      (pxcor = 4 and pycor = 9)
+      [set pcolor green]]]
+
+  update_plot
+end
+
+
+to update_plot
+  if not switch [
+    set instQ charge ticks
+    set instI current ticks
+
   ;;show instI
-  tick
+    tick
+  ]
+end
+
+
+to go
+  switch_circuit
+  update_plot
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-705
-51
-1078
-425
+708
+20
+1114
+427
 -1
 -1
-8.90244
+9.71
 1
 10
 1
@@ -83,17 +137,17 @@ GRAPHICS-WINDOW
 20
 -20
 20
-1
-1
+0
+0
 1
 ticks
 30.0
 
 SWITCH
 14
-225
+167
 117
-258
+200
 switch
 switch
 0
@@ -133,28 +187,11 @@ inductance
 0
 Number
 
-BUTTON
-14
-70
-100
-103
-NIL
-continue
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
 PLOT
 135
 130
-681
-464
+689
+387
 charge and current
 time
 charge
@@ -166,8 +203,8 @@ true
 true
 "" ""
 PENS
-"Instantaneous Current" 1.0 0 -4699768 true "" "plot instI"
-"Instantaneous Charge on Capacitor" 1.0 0 -14070903 true "" "plot instQ"
+"Instantaneous Current" 1.0 0 -13345367 true "" "plot instI"
+"Instantaneous Charge on Capacitor" 1.0 0 -1604481 true "" "plot instQ"
 
 BUTTON
 14
@@ -229,28 +266,34 @@ Please input voltage, capacitance, and inductance values below:\n
 0.0
 1
 
-@#$#@#$#@
-ask patches [
-    if pxcor = -10 and pycor >= -10 and pycor <= 10 [
-      set pcolor green
-    ]
-    if pxcor = 10 and pycor >= -10 and pycor <= 10 [
-      set pcolor green
-    ]
-    if pxcor = 0 and pycor >= -10 and pycor <= 5[
-      set pcolor green
-    ]
-    if pycor = -10 and pxcor >= -10 and pxcor <= 10[
-      set pcolor green
-    ]
-    if pycor = 10 and pxcor >= -10 and pxcor <= -5 [
-      set pcolor green
-    ]
-    if pycor = 10 and pxcor >= 5  and pxcor <= 10 [
-      set pcolor green
-    ]
-  ]
+TEXTBOX
+317
+10
+467
+52
+We recommend having ticks at a \"slower\" speed so as not to make it too fast.\n
+11
+0.0
+1
 
+BUTTON
+21
+233
+84
+266
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+@#$#@#$#@
 ## WHAT IS IT?
 
 (a general understanding of what the model is trying to show or explain)
