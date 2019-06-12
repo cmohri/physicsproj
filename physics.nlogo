@@ -99,6 +99,56 @@ to switch_circuit
   update_plot
 end
 
+to reset
+  clear-all
+  crt 10
+  ask turtles[set size 5]
+end
+
+to diagnose
+  ask turtles[print xcor]
+  ask turtles[print ycor]
+end
+
+to move_charge
+  ask turtles[
+    ;;if (xcor = 0 and ycor = 0)[
+      ;;if (turtles-at 0 1)[
+       ;; fd 1
+     ;; ]
+    ;;]
+    if (xcor = 0 and ycor >= 0 and ycor < 15)[
+      facexy xcor 15
+      fd 1
+    ]
+    if (xcor >= 0 and xcor <= 14 and ycor >= 15 and ycor <= 29)[
+      facexy 15 30
+      fd 1
+    ]
+    if (xcor > 14 and xcor < 15 and ycor > 29 and ycor < 30)[
+      move-to patch 15 30
+    ]
+    if (xcor >=  15 and ycor = 30)[
+      facexy 30 30
+      fd 1
+    ]
+    if (xcor = 30 and ycor > -30)[
+      facexy 30 -30
+      fd 1
+    ]
+    if (xcor >= 0 and ycor = -30)[
+      facexy 0 -30
+      fd 1
+    ]
+    if (xcor = 0 and ycor < 0)[
+      facexy 0 0
+      fd 1
+    ]
+  ]
+
+end
+
+
 
 to update_plot
   if not switch [
@@ -119,11 +169,11 @@ end
 GRAPHICS-WINDOW
 708
 20
-1114
-427
+1499
+812
 -1
 -1
-9.71
+6.5
 1
 10
 1
@@ -133,10 +183,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--20
-20
--20
-20
+-60
+60
+-60
+60
 0
 0
 1
@@ -283,6 +333,23 @@ BUTTON
 266
 NIL
 go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+17
+322
+123
+355
+NIL
+move_charge
 T
 1
 T
