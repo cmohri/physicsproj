@@ -1,46 +1,69 @@
 globals [Q omega instQ instI]
 
 to setup
+  let scale 3
   clear-all
   reset-ticks
   ask patches [
-    if pxcor = -10 and pycor >= -10 and pycor <= 10 [
+    if pxcor = -10 * scale and pycor >= -10 * scale and pycor <= 10 * scale [
       set pcolor green
     ]
-    if pxcor = 10 and pycor >= -10 and pycor <= 10 [
+    if pxcor = 10 * scale and pycor >= -10 * scale and pycor <= 10 * scale [
       set pcolor green
     ]
-    if pxcor = 0 and pycor >= -10 and pycor <= 5[
+    if pxcor = 0 and pycor >= -10 * scale and pycor <= 5 * scale[
       set pcolor green
     ]
-    if pycor = -10 and pxcor >= -10 and pxcor <= 10[
+    if pycor = -10 * scale and pxcor >= -10 * scale and pxcor <= 10 * scale[
       set pcolor green
     ]
-    if pycor = 10 and pxcor >= -10 and pxcor <= -5 [
+    if pycor = 10 * scale and pxcor >= -10 * scale and pxcor <= -5 * scale [
       set pcolor green
     ]
-    if pycor = 10 and pxcor >= 5  and pxcor <= 10 [
+    if pycor = 10 * scale and pxcor >= 5 * scale and pxcor <= 10 * scale [
       set pcolor green
     ]
   ]
-  ask patches [if pycor = -1 and pxcor >= -2 and pxcor <= 2[set pcolor green]]
-  ask patches [if pycor = 1 and pxcor >= -2 and pxcor <= 2[set pcolor green
-  sprout bigQ]]
-  ask patches [if pxcor = 0 and pycor = 0[set pcolor black]]
-
   ask patches [
-      if (pxcor = -1 and pycor = 6) or
-      (pxcor = -2 and pycor = 7) or
-      (pxcor = -3 and pycor = 8) or
-      (pxcor = -4 and pycor = 9)
-
-      [set pcolor green]]
+    if pycor = -1 * scale and pxcor >= -2 * scale and pxcor <= 2 * scale [
+      set pcolor green
+    ]
+  ]
+  ask patches
+  [if pycor = 1 * scale and pxcor >= -2  * scale and pxcor <= 2 * scale
+    [set pcolor green
+      sprout bigQ
+    ]
+  ]
+  ask turtles [
+    set size 2
+  ]
+  ask patches [
+    if (pxcor = 0 and pycor <= 2  and pycor >= -2 )[
+      set pcolor black
+    ]
+  ]
+  ;; loop for closed switch equation
+  let start -15
+  while [start <= 0][
+    ask patches [
+      if pxcor = start and pycor = line start[
+        set pcolor green
+      ]
+    ]
+    set start (start + 1)
+  ]
   set voltage 10
   set capacitance 10
   set inductance 10
   set Q bigQ
   set omega o
   set switch True
+end
+
+;; equation for line in setup function
+to-report line [xval]
+  report (-1 * xval) + 15
 end
 
 ;; user input: capacitance, EMF, inductance
@@ -74,29 +97,43 @@ end
 
 
 to switch_circuit
+  let scale 3
   if not switch [
+   let start -14
+   while [start < 0][
+      ask patches [
+        if pxcor = start and pycor = line start[
+          set pcolor black
+        ]
+      ]
+      set start (start + 1)
+  ]
 
-    ask patches [
-      if (pxcor = -1 and pycor = 6) or
-      (pxcor = -2 and pycor = 7) or
-      (pxcor = -3 and pycor = 8) or
-      (pxcor = -4 and pycor = 9)
 
-      [set pcolor black]
 
-      if (pycor = 10 and pxcor >= -10 and pxcor <= -5) or
-      ( pycor = -10 and pxcor >= -10 and pxcor < 0)  or
-      (pxcor = -10 and pycor >= -10 and pycor < 10)
-      [set pcolor gray]]
 
-    ask patches [
-      if (pxcor = 1 and pycor = 6) or
-      (pxcor = 2 and pycor = 7)  or
-      (pxcor = 3 and pycor = 8) or
-      (pxcor = 4 and pycor = 9)
-      [set pcolor green]]]
+   ask patches [
+      if (pycor = 10 * scale and pxcor >= -10 * scale and pxcor <= -5 * scale) or
+      ( pycor = -10 * scale and pxcor >= -10 * scale and pxcor < 0)  or
+      (pxcor = -10 * scale and pycor >= -10 * scale and pycor < 10 * scale)
+      [set pcolor gray]
+    ]
 
+
+    while [start <= 15][
+      ask patches [
+        if pxcor = start and pycor = line2 start[
+          set pcolor green
+        ]
+      ]
+      set start (start + 1)
+    ]
+  ]
   update_plot
+end
+
+to-report line2 [xvar]
+  report xvar + 15
 end
 
 
@@ -115,15 +152,64 @@ to go
   switch_circuit
   update_plot
 end
+
+
+to reset
+  clear-all
+  crt 10
+  ask turtles[set size 5]
+end
+
+to diagnose
+  ask turtles [print xcor]
+  ask turtles [print ycor]
+end
+
+to move_charge
+  ask turtles[
+    ;;if (xcor = 0 and ycor = 0)[
+      ;;if (turtles-at 0 1)[
+       ;; fd 1
+     ;; ]
+    ;;]
+    if (xcor = 0 and ycor >= 0 and ycor < 15)[
+      facexy xcor 15
+      fd 1
+    ]
+    if (xcor >= 0 and xcor <= 14 and ycor >= 15 and ycor <= 29)[
+      facexy 15 30
+      fd 1
+    ]
+    if (xcor > 14 and xcor < 15 and ycor > 29 and ycor < 30)[
+      move-to patch 15 30
+    ]
+    if (xcor >=  15 and ycor = 30)[
+      facexy 30 30
+      fd 1
+    ]
+    if (xcor = 30 and ycor > -30)[
+      facexy 30 -30
+      fd 1
+    ]
+    if (xcor >= 0 and ycor = -30)[
+      facexy 0 -30
+      fd 1
+    ]
+    if (xcor = 0 and ycor < 0)[
+      facexy 0 0
+      fd 1
+    ]
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
-708
-20
-1114
-427
+439
+10
+1232
+804
 -1
 -1
-9.71
+6.49
 1
 10
 1
@@ -133,10 +219,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--20
-20
--20
-20
+-60
+60
+-60
+60
 0
 0
 1
@@ -150,7 +236,7 @@ SWITCH
 200
 switch
 switch
-0
+1
 1
 -1000
 
@@ -189,9 +275,9 @@ Number
 
 PLOT
 135
-130
-689
-387
+151
+671
+386
 charge and current
 time
 charge
@@ -283,6 +369,23 @@ BUTTON
 266
 NIL
 go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+112
+483
+226
+516
+NIL
+move_charge\n
 T
 1
 T
