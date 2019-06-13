@@ -1,3 +1,7 @@
+;; Clara Mohri and Simon Tsui
+;; AP Physics Final Project
+
+;; global variables
 globals [Q omega instQ instI]
 
 to setup
@@ -203,13 +207,13 @@ to move_charge
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-439
-10
-1232
-804
+687
+44
+1248
+606
 -1
 -1
-6.49
+4.57025
 1
 10
 1
