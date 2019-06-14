@@ -2,7 +2,7 @@
 ;; AP Physics Final Project
 
 ;; global variables
-globals [Q omega instQ instI]
+globals [Q omega instQ instI direction]
 
 to setup
   let scale 3
@@ -77,6 +77,7 @@ to setup
   set Q bigQ
   set omega o
   set switch True
+  set direction True
 end
 
 ;; equation for line in setup function
@@ -169,13 +170,19 @@ end
 to go
   switch_circuit
   update_plot
+  move_charge
 end
 
 
 to reset
   clear-all
   crt 10
-  ask turtles[set size 5]
+  ask turtles[
+    set size 3
+    set shape "circle"
+    set color 105
+  ]
+  set direction true
 end
 
 to diagnose
@@ -191,38 +198,70 @@ end
 
 
 to move_charge
-  ask turtles[
-    ;;if (xcor = 0 and ycor = 0)[
-      ;;if (turtles-at 0 1)[
-       ;; fd 1
-     ;; ]
-    ;;]
-    if (xcor = 0 and ycor >= 0 and ycor < 15)[
-      facexy xcor 15
-      fd 1
-    ]
-    if (xcor >= 0 and xcor <= 14 and ycor >= 15 and ycor <= 29)[
-      facexy 15 30
-      fd 1
-    ]
-    if (xcor > 14 and xcor < 15 and ycor > 29 and ycor < 30)[
-      move-to patch 15 30
-    ]
-    if (xcor >=  15 and ycor = 30)[
-      facexy 30 30
-      fd 1
-    ]
-    if (xcor = 30 and ycor > -30)[
-      facexy 30 -30
-      fd 1
-    ]
-    if (xcor >= 0 and ycor = -30)[
-      facexy 0 -30
-      fd 1
-    ]
-    if (xcor = 0 and ycor < 0)[
-      facexy 0 0
-      fd 1
+  if switch = false[
+    ask turtles[
+      if direction = true[
+        if (xcor = 0 and ycor >= 0 and ycor < 15)[
+          facexy xcor 15
+          if not any? turtles-on patch-ahead 1[
+            fd 1
+          ]
+        ]
+        if (xcor >= 0 and xcor <= 14 and ycor >= 15 and ycor <= 29)[
+          facexy 15 30
+          fd 1
+        ]
+        if (xcor > 14 and xcor < 15 and ycor > 29 and ycor < 30)[
+          move-to patch 15 30
+        ]
+        if (xcor >=  15 and ycor = 30)[
+          facexy 30 30
+          fd 1
+        ]
+        if (xcor = 30 and ycor > -30)[
+          facexy 30 -30
+          fd 1
+        ]
+        if (xcor >= 0 and ycor = -30)[
+          facexy 0 -30
+          fd 1
+        ]
+        if (xcor = 0 and ycor < -3)[
+          facexy 0 0
+          fd 1
+        ]
+      ]
+      if direction = false[
+        if (xcor = 0 and ycor <= -3)[
+          facexy 0 -30
+          if not any? turtles-on patch-ahead 1[
+            fd 1
+          ]
+        ]
+        if (xcor < 30 and ycor = -30)[
+          facexy 30 -30
+          fd 1
+        ]
+        if (xcor = 30 and ycor < 30)[
+          facexy 30 30
+          fd 1
+        ]
+        if (xcor > 15 and ycor = 30)[
+          facexy 15 30
+          fd 1
+        ]
+        if (xcor > 1 and xcor <= 15 and ycor > 16 and ycor <= 30)[
+          facexy 0 15
+          fd 1
+        ]
+        if (xcor > 0 and xcor < 1 and ycor > 15 and ycor < 16)[
+          move-to patch 0 15
+        ]
+      if (xcor = 0 and ycor > 3)[
+        facexy 0 3
+        fd 1
+      ]
+      ]
     ]
   ]
 end
@@ -261,7 +300,7 @@ SWITCH
 200
 switch
 switch
-1
+0
 1
 -1000
 
