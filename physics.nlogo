@@ -50,7 +50,7 @@ to setup
   ask patches
   [if pycor = 1 * scale and pxcor >= -2  * scale and pxcor <= 2 * scale
     [set pcolor green
-      sprout bigQ
+      sprout 20
     ]
   ]
   ask turtles [
@@ -78,6 +78,8 @@ to setup
   set omega o
   set switch True
   set direction True
+  crt 1 [set xcor 15 set ycor 20 set color black set size 7]
+  crt 1 [set xcor 45 set ycor 20 set color black set size 7]
 end
 
 ;; equation for line in setup function
@@ -128,9 +130,6 @@ to switch_circuit
       set start (start + 1)
   ]
 
-
-
-
    ask patches [
       if (pycor = 10 * scale and pxcor >= -10 * scale and pxcor <= -5 * scale) or
       ( pycor = -10 * scale and pxcor >= -10 * scale and pxcor < 0)  or
@@ -171,6 +170,10 @@ to go
   switch_circuit
   update_plot
   move_charge
+  if switch = False[
+    update_mag_field
+
+  ]
 end
 
 
@@ -188,12 +191,6 @@ end
 to diagnose
   ask turtles [print xcor]
   ask turtles [print ycor]
-end
-
-
-to-report mag_current
-  ;; set direction of arrow for current based on current value
-  ;; set magnetic field turtles based on current value
 end
 
 
@@ -265,6 +262,34 @@ to move_charge
     ]
   ]
 end
+
+to update_mag_field
+  if instI >= 0 [
+
+    ask turtles [
+      if xcor = 15 and ycor = 20 [
+        set color red
+        set shape "target"
+      ]
+      if xcor = 45 and ycor = 20[
+        set shape "x"
+        set color red
+      ]
+    ]
+  ]
+  if instI < 0[
+    ask turtles[
+      if xcor = 15 and ycor = 20[
+        set shape "x"
+        set color red
+      ]
+      if xcor = 45 and ycor = 20[
+        set shape "target"
+        set color red
+      ]
+    ]
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 717
@@ -300,7 +325,7 @@ SWITCH
 200
 switch
 switch
-0
+1
 1
 -1000
 
