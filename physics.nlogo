@@ -27,6 +27,20 @@ to setup
     if pycor = 10 * scale and pxcor >= 5 * scale and pxcor <= 10 * scale [
       set pcolor green
     ]
+    ;; inductor shape
+    if pxcor = 31 and pycor = 3 [set pcolor red]
+    if pxcor = 30 and pycor = 4 [set pcolor red]
+    if pxcor = 32 and pycor = 2 [set pcolor red]
+    if pxcor = 31 and pycor = 1 [set pcolor red]
+    if pxcor = 30 and pycor = 0 [set pcolor red]
+    if pxcor = 29 and pycor = -1 [set pcolor red]
+    if pxcor = 28 and pycor = -2 [set pcolor red]
+    if pxcor = 29 and pycor = -3 [set pcolor red]
+    if pxcor = 30 and pycor = -4 [set pcolor red]
+    ;; get rid of green patches in area of inductor
+    if pxcor >= 28 and pycor >= -4 and pycor  <= 4 and pcolor = green [ set pcolor black]
+    ;; make inductor green
+    if pxcor >= 28 and pycor >= -4 and pycor  <= 4 and pcolor = red [ set pcolor green]
   ]
   ask patches [
     if pycor = -1 * scale and pxcor >= -2 * scale and pxcor <= 2 * scale [
@@ -169,6 +183,13 @@ to diagnose
   ask turtles [print ycor]
 end
 
+
+to-report mag_current
+  ;; set direction of arrow for current based on current value
+  ;; set magnetic field turtles based on current value
+end
+
+
 to move_charge
   ask turtles[
     ;;if (xcor = 0 and ycor = 0)[
@@ -207,13 +228,13 @@ to move_charge
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-687
-44
-1248
-606
+717
+10
+1190
+484
 -1
 -1
-4.57025
+3.843
 1
 10
 1
@@ -384,10 +405,10 @@ NIL
 1
 
 BUTTON
-112
-483
-226
-516
+6
+304
+120
+337
 NIL
 move_charge\n
 T
