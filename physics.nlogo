@@ -50,9 +50,11 @@ to setup
   ask patches
   [if pycor = 1 * scale and pxcor >= -2  * scale and pxcor <= 2 * scale
     [set pcolor green
-      sprout 20
+      ;;sprout 20
     ]
   ]
+  ask patch 0 scale[sprout 20]
+  ask turtles[set size 3 set shape "circle" set color 105]
   ask turtles [
     set size 2
   ]
@@ -195,8 +197,24 @@ end
 
 
 to move_charge
+  if (instI < 0 and direction = false)[
+    set direction true
+    ask turtles[
+      if who < 20[
+        rt 180
+      ]
+    ]
+  ]
+  if (instI > 0 and direction = true)[
+    set direction false
+    ask turtles[
+      if who < 20[
+        rt 180]
+    ]
+  ]
   if switch = false[
     ask turtles[
+    if who < 20[
       if direction = true[
         if (xcor = 0 and ycor >= 0 and ycor < 15)[
           facexy xcor 15
@@ -254,12 +272,13 @@ to move_charge
         if (xcor > 0 and xcor < 1 and ycor > 15 and ycor < 16)[
           move-to patch 0 15
         ]
-      if (xcor = 0 and ycor > 3)[
-        facexy 0 3
-        fd 1
-      ]
+        if (xcor = 0 and ycor > 3)[
+          facexy 0 3
+          fd 1
+        ]
       ]
     ]
+  ]
   ]
 end
 
@@ -325,7 +344,7 @@ SWITCH
 200
 switch
 switch
-1
+0
 1
 -1000
 
