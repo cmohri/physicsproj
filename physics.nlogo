@@ -73,6 +73,21 @@ to setup
     ]
     set start (start + 1)
   ]
+
+  ask patches [
+    if (pycor = 0 or pycor = 2 or pycor = -2) and pxcor = -30 [
+      set pcolor black
+    ]
+    if (pxcor >= -33 and pxcor <= -27) and (pycor = -3 or pycor = 1) [
+      set pcolor green
+    ]
+    if (pxcor >= -31 and pxcor <= -29) and (pycor = -1 or pycor = 3) [
+      set pcolor green
+    ]
+  ]
+
+
+
   set voltage 10
   set capacitance 10
   set inductance 10
@@ -133,9 +148,9 @@ to switch_circuit
   ]
 
    ask patches [
-      if (pycor = 10 * scale and pxcor >= -10 * scale and pxcor <= -5 * scale) or
-      ( pycor = -10 * scale and pxcor >= -10 * scale and pxcor < 0)  or
-      (pxcor = -10 * scale and pycor >= -10 * scale and pycor < 10 * scale)
+      if (pycor = 10 * scale and pxcor >= -10 * scale and pxcor <= -5 * scale and pcolor = green) or
+      ( pycor = -10 * scale and pxcor >= -10 * scale and pxcor < 0 and pcolor = green)  or
+      (pxcor = -10 * scale and pycor >= -10 * scale and pycor < 10 * scale and pcolor = green) or (pxcor <= -27 and pcolor = green)
       [set pcolor gray]
     ]
 
@@ -166,6 +181,7 @@ to update_plot
     tick
   ]
   if instQ > 0[
+
     ask patches [
       if pycor = -3 and pxcor >= -6  and pxcor <= 6 [
         set pcolor blue
@@ -173,24 +189,27 @@ to update_plot
     ]
     ask patches
     [if pycor = 3 and pxcor >= -6 and pxcor <= 6
-      [set pcolor red
-      ;;sprout 20
+      [
+        set pcolor red
+
+      ]
     ]
-  ]
   ]
   if instQ < 0[
-      ask patches [
-        if pycor = -3 and pxcor >= -6 and pxcor <= 6 [
-          set pcolor red
-        ]
+
+    ask patches [
+      if pycor = -3 and pxcor >= -6 and pxcor <= 6 [
+
+        set pcolor red
       ]
-      ask patches
-      [if pycor = 3  and pxcor >= -6 and pxcor <= 6
-        [set pcolor blue
-          ;;sprout 20
-        ]
+      if pycor = 3  and pxcor >= -6 and pxcor <= 6
+        [
+
+          set pcolor blue
+
       ]
     ]
+  ]
 end
 
 
@@ -200,7 +219,6 @@ to go
   move_charge
   if switch = False[
     update_mag_field
-    print find_speed
   ]
 end
 
@@ -362,7 +380,7 @@ SWITCH
 200
 switch
 switch
-1
+0
 1
 -1000
 
@@ -489,29 +507,12 @@ We recommend having ticks at a \"slower\" speed so as not to make it too fast.\n
 1
 
 BUTTON
-21
-233
-84
-266
+15
+79
+78
+112
 NIL
 go
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-6
-304
-120
-337
-NIL
-move_charge\n
 T
 1
 T
