@@ -109,12 +109,12 @@ end
 
 
 to-report charge [time]
-  let deg (180 / pi) * (omega * time)
+  let deg (180 / pi) * (omega * time / 20)
   report Q * cos(deg)
 end
 
 to-report current [time]
-  let deg (180 / pi) * (omega * time)
+  let deg (180 / pi) * (omega * time / 20)
   report -1 * Q * omega * sin (deg)
 end
 
@@ -165,6 +165,32 @@ to update_plot
   ;;show instI
     tick
   ]
+  if instQ > 0[
+    ask patches [
+      if pycor = -3 and pxcor >= -6  and pxcor <= 6 [
+        set pcolor blue
+      ]
+    ]
+    ask patches
+    [if pycor = 3 and pxcor >= -6 and pxcor <= 6
+      [set pcolor red
+      ;;sprout 20
+    ]
+  ]
+  ]
+  if instQ < 0[
+      ask patches [
+        if pycor = -3 and pxcor >= -6 and pxcor <= 6 [
+          set pcolor red
+        ]
+      ]
+      ask patches
+      [if pycor = 3  and pxcor >= -6 and pxcor <= 6
+        [set pcolor blue
+          ;;sprout 20
+        ]
+      ]
+    ]
 end
 
 
@@ -174,7 +200,7 @@ to go
   move_charge
   if switch = False[
     update_mag_field
-
+    print find_speed
   ]
 end
 
@@ -195,90 +221,82 @@ to diagnose
   ask turtles [print ycor]
 end
 
+to-report find_speed
+  report instI / (-1 * Q * omega)
+end
 
 to move_charge
   if (instI < 0 and direction = false)[
     set direction true
-    ask turtles[
-      if who < 20[
-        rt 180
-      ]
-    ]
+    ask turtles[rt 180]
   ]
   if (instI > 0 and direction = true)[
     set direction false
-    ask turtles[
-      if who < 20[
-        rt 180]
-    ]
+    ask turtles[rt 180]
   ]
   if switch = false[
     ask turtles[
-    if who < 20[
-      if direction = true[
-        if (xcor = 0 and ycor >= 0 and ycor < 15)[
-          facexy xcor 15
-          if not any? turtles-on patch-ahead 1[
-            fd 1
+      if who < 20[
+        if direction = true[
+          if (xcor = 0 and ycor >= 0 and ycor < 15)[
+            if (distancexy 0 15 < find_speed)[move-to patch 0 15 facexy 15 30]
+            facexy xcor 15
+            if not any? turtles-on patch-ahead 1[
+              fd 1 * find_speed
+            ]
+          ]
+          if (xcor >= 0 and xcor < 15 and ycor >= 15 and ycor < 30 )[
+            if (distancexy 15 30 < 1 * find_speed)[move-to patch 15 30 facexy 30 30]
+            facexy 15 30
+            fd 1 * find_speed
+          ]
+          if (xcor >=  15 and xcor < 30 and ycor = 30)[
+            if (distancexy 30 30 < 1 * find_speed)[ move-to patch 30 30 facexy 30 -30]
+            fd 1 * find_speed
+          ]
+          if (xcor = 30 and ycor > -30)[
+            if (distancexy 30 -30 < 1 * find_speed)[ move-to patch 30 -30 facexy 0 -30 ]
+            fd 1 * find_speed
+          ]
+          if (xcor >= 0 and ycor = -30)[
+            if (distancexy 0 -30 < 1 * find_speed)[ move-to patch 0 -30 facexy 0 0]
+            fd 1 * find_speed
+          ]
+          if (xcor = 0 and ycor < -3)[
+            if (distancexy 0 -3 < 1 * find_speed)[ move-to patch 0 -3]
+            fd 1 * find_speed
           ]
         ]
-        if (xcor >= 0 and xcor <= 14 and ycor >= 15 and ycor <= 29)[
-          facexy 15 30
-          fd 1
-        ]
-        if (xcor > 14 and xcor < 15 and ycor > 29 and ycor < 30)[
-          move-to patch 15 30
-        ]
-        if (xcor >=  15 and ycor = 30)[
-          facexy 30 30
-          fd 1
-        ]
-        if (xcor = 30 and ycor > -30)[
-          facexy 30 -30
-          fd 1
-        ]
-        if (xcor >= 0 and ycor = -30)[
-          facexy 0 -30
-          fd 1
-        ]
-        if (xcor = 0 and ycor < -3)[
-          facexy 0 0
-          fd 1
-        ]
-      ]
-      if direction = false[
-        if (xcor = 0 and ycor <= -3)[
-          facexy 0 -30
-          if not any? turtles-on patch-ahead 1[
-            fd 1
+        if direction = false[
+          if (xcor = 0 and ycor <= -2 and ycor > -30)[
+            if (distancexy 0 -30 < -1 * find_speed)[ move-to patch 0 -30 facexy 30 -30]
+            if not any? turtles-on patch-ahead 1[
+              fd -1 * find_speed
+            ]
           ]
-        ]
-        if (xcor < 30 and ycor = -30)[
-          facexy 30 -30
-          fd 1
-        ]
-        if (xcor = 30 and ycor < 30)[
-          facexy 30 30
-          fd 1
-        ]
-        if (xcor > 15 and ycor = 30)[
-          facexy 15 30
-          fd 1
-        ]
-        if (xcor > 1 and xcor <= 15 and ycor > 16 and ycor <= 30)[
-          facexy 0 15
-          fd 1
-        ]
-        if (xcor > 0 and xcor < 1 and ycor > 15 and ycor < 16)[
-          move-to patch 0 15
-        ]
-        if (xcor = 0 and ycor > 3)[
-          facexy 0 3
-          fd 1
+          if (xcor < 30 and ycor = -30)[
+            if (distancexy 30 -30 < -1 * find_speed)[move-to patch 30 -30 facexy 30 30]
+            fd -1 * find_speed
+          ]
+          if (xcor = 30 and ycor < 30)[
+            if(distancexy 30 30 < -1 * find_speed)[move-to patch 30 30 facexy 15 30]
+            fd -1 * find_speed
+          ]
+          if (xcor > 15 and ycor = 30)[
+            if (distancexy 15 30 < -1 * find_speed)[move-to patch 15 30 facexy 0 15]
+            fd -1 * find_speed
+          ]
+          if (xcor > 0 and xcor <= 15 and ycor > 15 and ycor <= 30)[
+            if (distancexy 0 15 < -1 * find_speed)[move-to patch 0 15 facexy 0 3]
+            fd -1 * find_speed
+          ]
+          if (xcor = 0 and ycor > 3)[
+            if (distancexy 0 3 < -1 * find_speed)[set xcor 0 set ycor 3]
+            fd -1 * find_speed
+          ]
         ]
       ]
     ]
-  ]
   ]
 end
 
@@ -344,7 +362,7 @@ SWITCH
 200
 switch
 switch
-0
+1
 1
 -1000
 
